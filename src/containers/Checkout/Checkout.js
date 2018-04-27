@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 
 class Checkout extends Component {
@@ -11,9 +12,16 @@ class Checkout extends Component {
     }
   };
 
+  checkoutCancelled = () => this.props.history.goBack();
+  checkoutContinued = () => this.props.history.replace('/checkout/contact-data');
+
   render = () => (
     <Fragment>
-      <CheckoutSummary ingredients={this.state.ingredients} />
+      <CheckoutSummary
+        ingredients={this.state.ingredients}
+        onCheckoutCancelled={this.checkoutCancelled}
+        onCheckoutContinued={this.checkoutContinued}
+      />
     </Fragment>
   );
 }
