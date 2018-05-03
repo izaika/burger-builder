@@ -9,11 +9,54 @@ import Input from '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
   state = {
-    name: null,
-    email: null,
-    address: {
-      street: null,
-      postalCode: null
+    orderForm: {
+      name: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Name'
+        },
+        value: ''
+      },
+      street: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Street'
+        },
+        value: ''
+      },
+      zipCode: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'ZIP Code'
+        },
+        value: ''
+      },
+      country: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Country'
+        },
+        value: ''
+      },
+      email: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'email',
+          placeholder: 'Your E-Mail'
+        },
+        value: ''
+      },
+      deliveryMethod: {
+        elementType: 'select',
+        elementConfig: {
+          options: [{ value: 'fastest', displayValue: 'Fastest' }, { value: 'cheapest', displayValue: 'Cheapest' }]
+        },
+        value: ''
+      }
     },
     loading: false
   };
@@ -24,21 +67,10 @@ class ContactData extends Component {
     this.setState({ loading: true });
     const order = {
       ingredients: this.props.ingredients,
-      price: this.props.price,
-      customer: {
-        name: 'Igor Zaika',
-        address: {
-          street: 'Teststreet 1',
-          zipCode: '34456',
-          country: 'Ukraine'
-        },
-        email: 'test@example.com'
-      },
-      deliveryMethod: 'fastest'
+      price: this.props.price
     };
     try {
-      const response = await axios.post('orders.json', order);
-      console.log(response);
+      await axios.post('orders.json', order);
       this.setState({ loading: false }, () => {
         this.props.history.push('/');
       });
@@ -48,24 +80,51 @@ class ContactData extends Component {
     }
   };
 
-  render = () => (
-    <div className={classes.ContactData}>
-      <h4>Enter your contact data</h4>
-      {this.state.loading ? (
-        <Spinner />
-      ) : (
-        <form>
-          <Input inputtype="input" type="text" name="name" placeholder="Your Name" />
-          <Input inputtype="input" type="email" name="email" placeholder="Your E-mail" />
-          <Input inputtype="input" type="text" name="street" placeholder="Street" />
-          <Input inputtype="input" type="text" name="postal" placeholder="Postal Code" />
-          <Button btnType="Success" clicked={this.orderHandler}>
-            ORDER
-          </Button>
-        </form>
-      )}
-    </div>
-  );
+  inputChangedHandler = (event, inputId) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    };
+
+    const updatedFormElement = { ...updatedOrderForm[inputId], value: event.target.value };
+    updatedOrderForm[inputId] = updatedFormElement;
+
+    this.setState({ orderForm: updatedOrderForm });
+  };
+
+  render = () => {
+    const formElements = [];
+    const { orderForm } = this.state;
+    for (const key in orderForm) {
+      formElements.push({
+        id: key,
+        config: orderForm[key]
+      });
+    }
+
+    return (
+      <div className={classes.ContactData}>
+        <h4>Enter your contact data</h4>
+        {this.state.loading ? (
+          <Spinner />
+        ) : (
+          <form>
+            {formElements.map(formElement => (
+              <Input
+                key={formElement.id}
+                elementType={formElement.config.elementType}
+                elementConfig={formElement.config.elementConfig}
+                value={formElement.config.value}
+                changed={event => this.inputChangedHandler(event, formElement.id)}
+              />
+            ))}
+            <Button btnType="Success" clicked={this.orderHandler}>
+              ORDER
+            </Button>
+          </form>
+        )}
+      </div>
+    );
+  };
 }
 
 export default ContactData;
