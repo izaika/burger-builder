@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import axios from '../../../axios-orders';
+import { connect } from 'react-redux';
 
+import axios from '../../../axios-orders';
 import classes from './ContactData.css';
 
 import Button from '../../../components/UI/Button/Button';
@@ -182,4 +183,4 @@ class ContactData extends Component {
   };
 }
 
-export default ContactData;
+export default connect(state => ({ ingredients: state.ingredients, price: state.totalPrice }))(ContactData);
