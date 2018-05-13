@@ -10,7 +10,7 @@ import registerServiceWorker from './registerServiceWorker';
 import reducer from './store/reducer';
 
 ReactDOM.render(
-  <Provider store={createStore(reducer)}>
+  <Provider store={createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
