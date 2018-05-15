@@ -85,16 +85,15 @@ class BurgerBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  ingredients: state.ingredients,
-  totalPrice: state.totalPrice,
-  error: state.error
-});
-
-const mapDispatchToProps = {
-  onIngredientAdded: burgerBuilderActions.addIngredient,
-  onIngredientRemoved: burgerBuilderActions.removeIngredient,
-  onInitIngredients: burgerBuilderActions.initIngredients
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
+export default connect(
+  state => ({
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error
+  }),
+  {
+    onIngredientAdded: burgerBuilderActions.addIngredient,
+    onIngredientRemoved: burgerBuilderActions.removeIngredient,
+    onInitIngredients: burgerBuilderActions.initIngredients
+  }
+)(withErrorHandler(BurgerBuilder, axios));

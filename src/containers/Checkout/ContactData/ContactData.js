@@ -174,6 +174,13 @@ class ContactData extends Component {
   };
 }
 
-export default connect(state => ({ ingredients: state.ingredients, price: state.totalPrice, loading: state.loading }), {
-  onOrderBurger: actions.purchaseBurger
-})(withErrorHandler(ContactData, axios));
+export default connect(
+  state => ({
+    ingredients: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
+  }),
+  {
+    onOrderBurger: actions.purchaseBurger
+  }
+)(withErrorHandler(ContactData, axios));

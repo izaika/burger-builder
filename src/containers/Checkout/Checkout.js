@@ -26,4 +26,4 @@ class Checkout extends Component {
   };
 }
 
-export default connect(state => ({ ingredients: state.ingredients }))(Checkout);
+export default connect(state => ({ ingredients: state.burgerBuilder.ingredients }))(Checkout);
