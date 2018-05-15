@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import axios from '../../../axios-orders';
 import classes from './ContactData.css';
 
+import * as actions from '../../../store/actions';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 
 class ContactData extends Component {
   state = {
@@ -88,33 +90,22 @@ class ContactData extends Component {
         valid: true
       }
     },
-    formIsValid: false,
-    loading: false
+    formIsValid: false
   };
 
-  orderHandler = async event => {
+  orderHandler = event => {
     event.preventDefault();
 
-    this.setState({ loading: true });
     const formData = {};
     const { orderForm } = this.state;
     for (const formElementId in orderForm) {
       formData[formElementId] = orderForm[formElementId].value;
     }
-    const order = {
+    this.props.onOrderBurger({
       ingredients: this.props.ingredients,
       price: this.props.price,
       orderData: formData
-    };
-    try {
-      await axios.post('orders.json', order);
-      this.setState({ loading: false }, () => {
-        this.props.history.push('/');
-      });
-    } catch (e) {
-      this.setState({ loading: false });
-      console.error(e);
-    }
+    });
   };
 
   checkValidity = (value, rules) => {
@@ -158,7 +149,7 @@ class ContactData extends Component {
     return (
       <div className={classes.ContactData}>
         <h4>Enter your contact data</h4>
-        {this.state.loading ? (
+        {this.props.loading ? (
           <Spinner />
         ) : (
           <form onSubmit={this.orderHandler}>
@@ -183,4 +174,6 @@ class ContactData extends Component {
   };
 }
 
-export default connect(state => ({ ingredients: state.ingredients, price: state.totalPrice }))(ContactData);
+export default connect(state => ({ ingredients: state.ingredients, price: state.totalPrice, loading: state.loading }), {
+  onOrderBurger: actions.purchaseBurger
+})(withErrorHandler(ContactData, axios));
