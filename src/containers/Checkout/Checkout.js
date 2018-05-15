@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import * as actions from '../../store/actions';
+
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 
@@ -10,9 +12,10 @@ class Checkout extends Component {
   checkoutContinued = () => this.props.history.replace('/checkout/contact-data');
 
   render = () => {
-    console.log(this.props.ingredients);
+    const redirect = <Redirect to="/" />;
     return this.props.ingredients ? (
       <Fragment>
+        {this.props.purchased ? redirect : null}
         <CheckoutSummary
           ingredients={this.props.ingredients}
           onCheckoutCancelled={this.checkoutCancelled}
@@ -21,9 +24,11 @@ class Checkout extends Component {
         <Route path={`${this.props.match.path}/contact-data`} component={ContactData} />
       </Fragment>
     ) : (
-      <Redirect to="/" />
+      redirect
     );
   };
 }
 
-export default connect(state => ({ ingredients: state.burgerBuilder.ingredients }))(Checkout);
+export default connect(state => ({ ingredients: state.burgerBuilder.ingredients, purchased: state.order.purchased }))(
+  Checkout
+);

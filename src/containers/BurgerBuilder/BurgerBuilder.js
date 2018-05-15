@@ -8,7 +8,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import * as burgerBuilderActions from '../../store/actions';
+import * as actions from '../../store/actions';
 
 class BurgerBuilder extends Component {
   state = {
@@ -27,7 +27,10 @@ class BurgerBuilder extends Component {
     this.setState({ purchasing: false });
   };
 
-  purchaseContinueHandler = () => this.props.history.push('/checkout');
+  purchaseContinueHandler = () => {
+    this.props.onInitPurchase();
+    this.props.history.push('/checkout');
+  };
 
   updatePurchaseState = ingredients =>
     Object.keys(ingredients)
@@ -92,8 +95,9 @@ export default connect(
     error: state.burgerBuilder.error
   }),
   {
-    onIngredientAdded: burgerBuilderActions.addIngredient,
-    onIngredientRemoved: burgerBuilderActions.removeIngredient,
-    onInitIngredients: burgerBuilderActions.initIngredients
+    onIngredientAdded: actions.addIngredient,
+    onIngredientRemoved: actions.removeIngredient,
+    onInitIngredients: actions.initIngredients,
+    onInitPurchase: actions.purchaseInit
   }
 )(withErrorHandler(BurgerBuilder, axios));
