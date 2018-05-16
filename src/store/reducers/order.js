@@ -14,6 +14,7 @@ const reducer = (state = initialState, action) => {
         purchased: false
       };
     case actionTypes.PURCHASE_BURGER_START:
+    case actionTypes.FETCH_ORDERS_START:
       return {
         ...state,
         loading: true
@@ -29,8 +30,15 @@ const reducer = (state = initialState, action) => {
         purchased: true
       };
     case actionTypes.PURCHASE_BURGER_FAIL:
+    case actionTypes.FETCH_ORDERS_FAIL:
       return {
         ...state,
+        loading: false
+      };
+    case actionTypes.FETCH_ORDERS_SUCCESS:
+      return {
+        ...state,
+        orders: action.orders,
         loading: false
       };
 
