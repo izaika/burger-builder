@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import classes from './Auth.css';
+
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 import * as actions from '../../store/actions';
 
@@ -88,7 +90,7 @@ class Auth extends Component {
       formElements.push({ id: key, config: controls[key] });
     }
 
-    const form = formElements.map(formElement => (
+    let form = formElements.map(formElement => (
       <Input
         key={formElement.id}
         elementType={formElement.config.elementType}
@@ -100,8 +102,15 @@ class Auth extends Component {
       />
     ));
 
+    if (this.props.loading) {
+      form = <Spinner />;
+    }
+
+    const errorMessage = this.props.error ? <p>{this.props.error.message}</p> : null;
+
     return (
       <div className={classes.Auth}>
+        {errorMessage}
         <form onSubmit={this.submitHandler}>
           {form}
           <Button btnType="Success">SUBMIT</Button>
@@ -114,4 +123,6 @@ class Auth extends Component {
   }
 }
 
-export default connect(null, { onAuth: actions.auth })(Auth);
+export default connect(state => ({ loading: state.auth.loading, error: state.auth.error }), { onAuth: actions.auth })(
+  Auth
+);
