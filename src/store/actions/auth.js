@@ -7,12 +7,15 @@ export const authStart = () => ({ type: actionTypes.AUTH_START });
 export const authSuccess = authData => ({ type: actionTypes.AUTH_SUCCESS, authData });
 export const authFail = error => ({ type: actionTypes.AUTH_FAIL, error });
 
-export const auth = (email, password) => async dispatch => {
+export const auth = (email, password, isSignup) => async dispatch => {
   dispatch(authStart());
   try {
+    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser';
+    if (!isSignup) url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword';
+
     const response = await axios({
       method: 'post',
-      url: 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser',
+      url,
       params: { key: secret.authFirebaseKey },
       data: { email, password, returnSecureToken: true }
     });

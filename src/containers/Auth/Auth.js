@@ -38,8 +38,14 @@ class Auth extends Component {
         valid: false,
         touched: false
       }
-    }
+    },
+    isSignup: true
   };
+
+  switchAuthModeHandler = () =>
+    this.setState(prevState => ({
+      isSignup: !prevState.isSignup
+    }));
 
   checkValidity = (value, rules) => {
     if (!rules) return true;
@@ -72,7 +78,7 @@ class Auth extends Component {
   submitHandler = event => {
     event.preventDefault();
     const { email, password } = this.state.controls;
-    this.props.onAuth(email.value, password.value);
+    this.props.onAuth(email.value, password.value, this.state.isSignup);
   };
 
   render() {
@@ -95,10 +101,15 @@ class Auth extends Component {
     ));
 
     return (
-      <form className={classes.Auth} onSubmit={this.submitHandler}>
-        {form}
-        <Button btnType="Success">SUBMIT</Button>
-      </form>
+      <div className={classes.Auth}>
+        <form onSubmit={this.submitHandler}>
+          {form}
+          <Button btnType="Success">SUBMIT</Button>
+        </form>
+        <Button btnType="Danger" clicked={this.switchAuthModeHandler}>
+          SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP'}
+        </Button>
+      </div>
     );
   }
 }
