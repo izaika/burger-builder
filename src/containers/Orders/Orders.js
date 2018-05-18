@@ -9,7 +9,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token);
   }
 
   render = () =>
@@ -20,6 +20,7 @@ class Orders extends Component {
     );
 }
 
-export default connect(state => ({ orders: state.order.orders, loading: state.order.loading }), {
-  onFetchOrders: actions.fetchOrders
-})(withErrorHandler(Orders, axios));
+export default connect(
+  state => ({ orders: state.order.orders, loading: state.order.loading, token: state.auth.token }),
+  { onFetchOrders: actions.fetchOrders }
+)(withErrorHandler(Orders, axios));

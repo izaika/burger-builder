@@ -101,11 +101,14 @@ class ContactData extends Component {
     for (const formElementId in orderForm) {
       formData[formElementId] = orderForm[formElementId].value;
     }
-    this.props.onOrderBurger({
-      ingredients: this.props.ingredients,
-      price: this.props.price,
-      orderData: formData
-    });
+    this.props.onOrderBurger(
+      {
+        ingredients: this.props.ingredients,
+        price: this.props.price,
+        orderData: formData
+      },
+      this.props.token
+    );
   };
 
   checkValidity = (value, rules) => {
@@ -178,7 +181,8 @@ export default connect(
   state => ({
     ingredients: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token
   }),
   {
     onOrderBurger: actions.purchaseBurger
