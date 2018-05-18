@@ -7,11 +7,11 @@ export const authStart = () => ({ type: actionTypes.AUTH_START });
 export const authSuccess = (idToken, userId) => ({ type: actionTypes.AUTH_SUCCESS, idToken, userId });
 export const authFail = error => ({ type: actionTypes.AUTH_FAIL, error });
 
-export const logOut = () => ({ type: actionTypes.AUTH_LOGOUT });
+export const logout = () => ({ type: actionTypes.AUTH_LOGOUT });
 
 export const checkAuthTimeout = expirationTime => async dispatch => {
   setTimeout(() => {
-    dispatch(logOut());
+    dispatch(logout());
   }, expirationTime * 1000);
 };
 
