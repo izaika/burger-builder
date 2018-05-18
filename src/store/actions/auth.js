@@ -4,7 +4,7 @@ import * as actionTypes from './actionTypes';
 import secret from '../../secret';
 
 export const authStart = () => ({ type: actionTypes.AUTH_START });
-export const authSuccess = authData => ({ type: actionTypes.AUTH_SUCCESS, authData });
+export const authSuccess = (idToken, userId) => ({ type: actionTypes.AUTH_SUCCESS, idToken, userId });
 export const authFail = error => ({ type: actionTypes.AUTH_FAIL, error });
 
 export const auth = (email, password, isSignup) => async dispatch => {
@@ -20,7 +20,7 @@ export const auth = (email, password, isSignup) => async dispatch => {
       data: { email, password, returnSecureToken: true }
     });
     console.log(response.data);
-    dispatch(authSuccess(response.data));
+    dispatch(authSuccess(response.data.idToken, response.data.localId));
   } catch (e) {
     console.error(e);
     dispatch(authFail(e));
