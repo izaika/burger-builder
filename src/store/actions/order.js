@@ -44,12 +44,16 @@ export const fetchOrdersStart = () => ({
   type: actionTypes.FETCH_ORDERS_START
 });
 
-export const fetchOrders = token => async dispatch => {
+export const fetchOrders = (token, userId) => async dispatch => {
   dispatch(fetchOrdersStart());
   try {
     const response = await axios({
       url: '/orders.json',
-      params: { auth: token }
+      params: {
+        auth: token,
+        orderBy: '"userId"',
+        equalTo: `"${userId}"`
+      }
     });
     const responseData = response.data;
     const orders = [];
