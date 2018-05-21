@@ -5,6 +5,7 @@ import axios from '../../../axios-orders';
 import classes from './ContactData.css';
 
 import * as actions from '../../../store/actions';
+import checkValidity from '../../../shared/checkValidity';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
@@ -112,17 +113,6 @@ class ContactData extends Component {
     );
   };
 
-  checkValidity = (value, rules) => {
-    if (!rules) return true;
-    let isValid = true;
-
-    if (rules.required) isValid = !!value.trim().length && isValid;
-    if (rules.minLength) isValid = value.length >= rules.minLength && isValid;
-    if (rules.maxLength) isValid = value.length <= rules.minLength && isValid;
-
-    return isValid;
-  };
-
   inputChangedHandler = (event, inputId) => {
     const updatedOrderForm = {
       ...this.state.orderForm
@@ -130,7 +120,7 @@ class ContactData extends Component {
 
     const value = event.target.value;
     const updatedFormElement = { ...updatedOrderForm[inputId], value, touched: true };
-    updatedFormElement.valid = this.checkValidity(value, updatedFormElement.validation);
+    updatedFormElement.valid = checkValidity(value, updatedFormElement.validation);
     updatedOrderForm[inputId] = updatedFormElement;
 
     let formIsValid = true;

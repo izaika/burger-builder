@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import classes from './Auth.css';
+import checkValidity from '../../shared/checkValidity';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
@@ -54,17 +55,6 @@ class Auth extends Component {
     if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') this.props.onSetAuthRedirectPath();
   }
 
-  checkValidity = (value, rules) => {
-    if (!rules) return true;
-    let isValid = true;
-
-    if (rules.required) isValid = !!value.trim().length && isValid;
-    if (rules.minLength) isValid = value.length >= rules.minLength && isValid;
-    if (rules.maxLength) isValid = value.length <= rules.minLength && isValid;
-
-    return isValid;
-  };
-
   inputChangedHandler = (event, controlName) => {
     const { value } = event.target;
     const currentControl = this.state.controls[controlName];
@@ -74,7 +64,7 @@ class Auth extends Component {
       [controlName]: {
         ...currentControl,
         value,
-        valid: this.checkValidity(value, currentControl.validation),
+        valid: checkValidity(value, currentControl.validation),
         touched: true
       }
     };
