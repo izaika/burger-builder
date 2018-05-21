@@ -8,12 +8,12 @@ import classes from './SideDrawer.css';
 const sideDrawer = props => (
   <Fragment>
     <Backdrop show={props.open} clicked={props.closed} />
-    <div className={`${classes.SideDrawer} ${props.open ? classes.Open : classes.Close}`}>
+    <div className={`${classes.SideDrawer} ${props.open ? classes.Open : classes.Close}`} onClick={props.closed}>
       <div className={classes.Logo}>
         <Logo />
       </div>
       <nav>
-        <NavigationItems isAuthenticated={props.Auth} />
+        <NavigationItems isAuthenticated={props.isAuth} />
       </nav>
     </div>
   </Fragment>
