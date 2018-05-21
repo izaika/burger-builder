@@ -20,12 +20,15 @@ class BurgerBuilder extends Component {
   }
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    const { props } = this;
+    if (props.isAuthenticated) {
+      this.setState({ purchasing: true });
+    } else {
+      props.onSetAuthRedirectPath('/checkout');
+      props.history.push('/auth');
+    }
   };
-
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
-  };
+  purchaseCancelHandler = () => this.setState({ purchasing: false });
 
   purchaseContinueHandler = () => {
     this.props.onInitPurchase();
@@ -38,9 +41,9 @@ class BurgerBuilder extends Component {
       .reduce((sum, el) => sum + el, 0) > 0;
 
   render() {
-    if (this.props.error === true) return <p>Ingredients can't be loaded</p>;
-
     const { props } = this;
+    if (props.error === true) return <p>Ingredients can't be loaded</p>;
+
     const { ingredients, totalPrice } = props;
 
     const disableInfo = { ...props.ingredients };
@@ -72,6 +75,7 @@ class BurgerBuilder extends Component {
             price={totalPrice}
             purchaseable={this.updatePurchaseState(ingredients)}
             ordered={this.purchaseHandler}
+            isAuth={props.isAuthenticated}
           />
         </Fragment>
       );
@@ -92,12 +96,14 @@ export default connect(
   state => ({
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
-    error: state.burgerBuilder.error
+    error: state.burgerBuilder.error,
+    isAuthenticated: !!state.auth.token
   }),
   {
     onIngredientAdded: actions.addIngredient,
     onIngredientRemoved: actions.removeIngredient,
     onInitIngredients: actions.initIngredients,
-    onInitPurchase: actions.purchaseInit
+    onInitPurchase: actions.purchaseInit,
+    onSetAuthRedirectPath: actions.setAuthRedirectPath
   }
 )(withErrorHandler(BurgerBuilder, axios));

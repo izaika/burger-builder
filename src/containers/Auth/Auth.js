@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import classes from './Auth.css';
@@ -49,6 +50,10 @@ class Auth extends Component {
       isSignup: !prevState.isSignup
     }));
 
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') this.onSetAuthRedirectPath();
+  }
+
   checkValidity = (value, rules) => {
     if (!rules) return true;
     let isValid = true;
@@ -84,6 +89,7 @@ class Auth extends Component {
   };
 
   render() {
+    const { props } = this;
     const formElements = [];
     const { controls } = this.state;
     for (const key in controls) {
@@ -102,15 +108,12 @@ class Auth extends Component {
       />
     ));
 
-    if (this.props.loading) {
-      form = <Spinner />;
-    }
-
-    const errorMessage = this.props.error ? <p>{this.props.error.message}</p> : null;
+    if (props.loading) form = <Spinner />;
 
     return (
       <div className={classes.Auth}>
-        {errorMessage}
+        {props.isAuthenticated && <Redirect to={props.authRedirectPath} />}
+        {props.error && <p>{props.error.message}</p>}
         <form onSubmit={this.submitHandler}>
           {form}
           <Button btnType="Success">SUBMIT</Button>
@@ -123,6 +126,16 @@ class Auth extends Component {
   }
 }
 
-export default connect(state => ({ loading: state.auth.loading, error: state.auth.error }), { onAuth: actions.auth })(
-  Auth
-);
+export default connect(
+  state => ({
+    loading: state.auth.loading,
+    error: state.auth.error,
+    isAuthenticated: !!state.auth.token,
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath
+  }),
+  dispatch => ({
+    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(actions.auth.setAuthRedirectPath('/'))
+  })
+)(Auth);
